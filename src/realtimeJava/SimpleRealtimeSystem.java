@@ -20,11 +20,13 @@ public class SimpleRealtimeSystem {
 
 	public static void main(String args[]) {
 
+		Thread.currentThread().setPriority(38);
+		
 		// Get current time
 		Clock c = Clock.getRealtimeClock();
-
+		
 		BitSet affinitySet = new BitSet();
-		affinitySet.set(0);
+		affinitySet.set(SystemSpec.Core);
 
 		// create one aperiodic thread
 		ATInstance aperiodicT1 = new ATInstance("aperiodic T1", 26, null, null);
@@ -62,7 +64,7 @@ public class SimpleRealtimeSystem {
 		periodicT2.setReleaseParameters(pp2);
 
 		// Create one periodic thread
-		PTInstance periodicT3 = new PTInstance("periodic T3", SystemSpec.PT3_Priority, null, null, aperiodicT1);
+		PTInstance periodicT3 = new PTInstance("periodic T3", SystemSpec.PT3_Priority, null, null);
 		try {
 			Affinity.set(Affinity.generate(affinitySet), periodicT3);
 		} catch (ProcessorAffinityException e) {
@@ -104,18 +106,10 @@ class ATInstance extends AperiodicThread {
 
 class PTInstance extends PeriodicThread {
 
-	AperiodicThread apt;
-
 	public PTInstance(String name, int priority, MemoryParameters mp, MemoryArea ma) {
 		super(name, priority, mp, ma);
-		this.apt = null;
 	}
 
-	public PTInstance(String name, int priority, MemoryParameters mp, MemoryArea ma, AperiodicThread oneRelease) {
-		super(name, priority, mp, ma);
-		this.apt = oneRelease;
-
-	}
 
 	@Override
 	public void execute() {
@@ -123,7 +117,23 @@ class PTInstance extends PeriodicThread {
 		if (nor % SystemSpec.Number_Of_Period == 0)
 			this.next = false;
 
-		// if (apt != null && nor % 3 == 0)
+		if (this.getName().equals("periodic T3") && nor % 3 == 0){
+			
+			BitSet affinitySet = new BitSet();
+			affinitySet.set(0);
+
+			// create one aperiodic thread
+			ATInstance aperiodicT1 = new ATInstance("aperiodic T1", 26, null, null);
+			try {
+				Affinity.set(Affinity.generate(affinitySet), aperiodicT1);
+			} catch (ProcessorAffinityException e) {
+				e.printStackTrace();
+			}
+			AperiodicParameters ap1 = new AperiodicParameters(new RelativeTime(50, 0), new RelativeTime(60, 0),
+					null /* new budgetOverRunHandler(aperiodicT1) */, new deadlineMissHandler(aperiodicT1));
+			aperiodicT1.setReleaseParameters(ap1);
+			aperiodicT1.start();
+		}
 		// apt.schedulePeriodic();
 
 		Util.timeConsumer(this.getReleaseParameters().getCost().getMilliseconds());

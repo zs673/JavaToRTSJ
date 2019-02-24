@@ -14,6 +14,7 @@ public class SystemSpec {
 	public static int PT1_Cost = 200*scale;
 	public static int PT1_Deadline = 2000*scale;
 	public static int PT1_Priority = 23;
+	public static int PT1_Normal_Priority = 3;
 	
 	/* Periodic Thread 2
 	 */
@@ -21,6 +22,7 @@ public class SystemSpec {
 	public static int PT2_Cost = 600*scale;
 	public static int PT2_Deadline = 1700*scale;
 	public static int PT2_Priority = 25;
+	public static int PT2_Normal_Priority = 5;
 	
 	/* Periodic Thread 3
 	 */
@@ -28,11 +30,15 @@ public class SystemSpec {
 	public static int PT3_Cost = 1000*scale;
 	public static int PT3_Deadline = 1100*scale;
 	public static int PT3_Priority = 27;
+	public static int PT3_Normal_Priority = 7;
 	
 	/* Aperiodic Thread 1
 	 */
 	public static int AT1_Cost = 100*scale;
 	public static int AT1_Deadline = 50*scale;
 	public static int AT1_Priority = 30;
+	public static int AT1_Normal_Priority = 10;
 
+	
+	public static int Core = 0;
 }
