@@ -5,13 +5,13 @@ public abstract class PeriodicThread extends Thread {
 	private long period;
 	private boolean isFinished = false;
 
-	public PeriodicThread(String name, long period) {
+	public PeriodicThread(String name, int priority, long period) {
 		super(name);
 		this.period = period;
+		this.setPriority(priority);
 	}
 
-	public void start() {
-		System.out.println("Task " + this.getName() + " is started");
+	public void run() {
 
 		while (!isFinished) {
 			long timeStamp = System.currentTimeMillis();
@@ -28,7 +28,7 @@ public abstract class PeriodicThread extends Thread {
 		}
 
 	}
-	
+
 	public long getPeriod() {
 		return period;
 	}
@@ -36,11 +36,11 @@ public abstract class PeriodicThread extends Thread {
 	public boolean isFinsihed() {
 		return isFinished;
 	}
-	
+
 	public void singalToFinish() {
 		isFinished = true;
 	}
-	
+
 	public abstract void execute();
 
 }
